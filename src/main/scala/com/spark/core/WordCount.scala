@@ -10,9 +10,15 @@ object WordCount {
 
     val lines = sparkContext.textFile("src/main/resources/data")
     lines.flatMap(_.split(" "))
-      .groupBy(x=>x)
+      .map(e => (e, 1))
+      .groupBy(x=>x._1)
       .map {
-        case (k,v) => (k, v.size)
+        case (_,list) =>
+          list.reduce(
+            (e1, e2) => {
+              (e1._1, e1._2 + e2._2)
+            }
+          )
       }
       .collect().foreach(println)
 

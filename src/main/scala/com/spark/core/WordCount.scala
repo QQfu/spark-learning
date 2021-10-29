@@ -9,6 +9,7 @@ object WordCount {
     val sparkContext = new SparkContext(sparkConfig)
 
     val lines = sparkContext.textFile("src/main/resources/data")
+
     lines.flatMap(_.split(" "))
       .map(e => (e, 1))
       .groupBy(x=>x._1)
@@ -20,6 +21,11 @@ object WordCount {
             }
           )
       }
+      .collect().foreach(println)
+
+    lines.flatMap(_.split(" "))
+      .map((_,1))
+      .reduceByKey(_+_)
       .collect().foreach(println)
 
     sparkContext.stop()

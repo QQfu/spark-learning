@@ -2,6 +2,8 @@ package com.spark.core
 
 import org.apache.spark.{SparkConf, SparkContext}
 
+import scala.collection.mutable
+
 object WordCount {
 
   def main(args: Array[String]): Unit = {
@@ -34,6 +36,18 @@ object WordCount {
       .foreach(println)
 
     tupleRdd1.join(tupleRdd2)
+      .collect()
+      .foreach(println)
+
+    tupleRdd1.cogroup(tupleRdd2)
+      .map(
+        s => {
+          val list = mutable.ListBuffer[Int]()
+          list ++= s._2._1
+          list ++= s._2._2
+          (s._1, list.toList)
+        }
+      )
       .collect()
       .foreach(println)
 
